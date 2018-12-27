@@ -1,7 +1,8 @@
 # STM32FcubeMX Template Project
 
 - ## Abstract
-    STM32cubeMXでプロジェクトの生成から、使用について
+    STM32cubeMXでプロジェクトの生成から、使用について   
+    [How to use cubeMX](http://happytech.jp/wordpress/2017/06/05/how-to-use-stm32cubemx/)
 
 - ## How to generate project
     *using STM32cubeMX version is v5.0.0*
@@ -13,17 +14,6 @@
 
     3. ### 上の画像のように設定する。
     4. 右上のGENERATE CODEでプロジェクトを生成
-
-- ## Compile
-    生成したプロジェクトに移動して以下のコマンドを実行する
-    | コマンド | 内容 |
-    |:---------:|:------------------------------------------------------|
-    | make | すべてのソースファイルがコンパイルされ,buildフォルダに実行ファイルが生成されます。 |
-    | make clean | buildフォルダが消去され、実行ファイル、オブジェクトファイルが消去されます。 |
-    | make -j | コンパイル時CPUが並列で処理します。他のオプションと兼用可能 |
-    | make -B | すべてのファイルが強制的に再コンパイルされます。 |
-    | make OPT=-Ox | 最適化オプションを変更します。xの値で最適化レベルを変更できます。デフォルトは-Og |
-
 
 - ## 新規プロジェクトの作成
     1. github上に新しいリポジトリを作成   
@@ -41,6 +31,27 @@
     ### *最新のテンプレートにアップデート
     - 以下のコマンドをプロジェクトフォルダー内で実行してください
         > git pull origin master
+
+- ## ユーザーのソースコードもコンパイルできるように修正
+    デフォルトのmakefileだと生成したソースファイルしかコンパイルされないので、ユーザーのソースファイルもコンパイルされるようにmakefileをいじる。   
+    ![](img/fix_makefile.png)
+    上の画像の**C_SOURCES**にコンパイルするソースが記述されている   
+    ここに以下のスクリプトを追加する   
+    > $(wildcard Src/*.c)\   
+
+    /Srcフォルダ内に外部ライブラリやユーザーのソースファイルを追加する   
+    /Incには、ヘッダーファイルをぶち込めば問題ない。   
+    再生成時に、消去された場合はその度追加する
+
+- ## Compile
+    生成したプロジェクトに移動して以下のコマンドを実行する
+    | コマンド | 内容 |
+    |:---------:|:------------------------------------------------------|
+    | make | すべてのソースファイルがコンパイルされ,buildフォルダに実行ファイルが生成されます。 |
+    | make clean | buildフォルダが消去され、実行ファイル、オブジェクトファイルが消去されます。 |
+    | make -j | コンパイル時CPUが並列で処理します。他のオプションと兼用可能 |
+    | make -B | すべてのファイルが強制的に再コンパイルされます。 |
+    | make OPT=-Ox | 最適化オプションを変更します。xの値で最適化レベルを変更できます。デフォルトは-Og |
 
 - ## 書き込み　デバッグ
     STlinkを使用して書き込み
@@ -80,6 +91,13 @@
     > ldd _install/usr/local/bin/st-info
 
 - ## 備考
+    - ユーザーコードの追記ルール   
+        http://happytech.jp/wordpress/2017/06/12/user-code-add-in-stm32cubemx/
+    
+    - HALライブラリのチュートリアル   
+        [しろうさぎのblog](http://blog.livedoor.jp/tec_kanpaku/archives/21346128.html)   
+        [stm32f103 tutrial on github](https://github.com/hocarm/STM32F103-Tutorial)
+
     - コンパイル時に以下のエラーが発生したとき   
         > /usr/lib/gcc/arm-none-eabi/6.3.1/../../../arm-none-eabi/bin/ld: error: /usr/lib/gcc/arm-none-eabi/6.3.1/../../../arm-none-eabi/lib/crt0.o: Conflicting CPU architectures 13/1   
         > /usr/lib/gcc/arm-none-eabi/6.3.1/../../../arm-none-eabi/bin/ld: failed to merge target specific data of file /usr/lib/gcc/arm-none-eabi/6.3.1/../../../arm-none-eabi/lib/crt0.o
