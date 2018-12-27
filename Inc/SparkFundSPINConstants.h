@@ -1,5 +1,5 @@
-#ifndef _dspin_constants_h_
-#define _dspin_constants_h_
+#ifndef __SPARKFUNDSPINCONSTANTS_H
+#define __SPARKFUNDSPINCONSTANTS_H
 
 // Constant definitions provided by ST
 

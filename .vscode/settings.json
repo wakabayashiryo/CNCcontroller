@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "sparkfunautodriver.h": "c",
-        "sparkfundspinconstants.h": "c"
+        "sparkfundspinconstants.h": "c",
+        "main.h": "c"
     }
 }

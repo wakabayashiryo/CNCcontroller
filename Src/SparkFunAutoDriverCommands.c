@@ -5,7 +5,7 @@
 
 // Realize the "set parameter" function, to write to the various registers in
 //  the dSPIN chip.
-void L6470_setParam(uint8_t param, uint32_t value) 
+void setParam(uint8_t param, uint32_t value) 
 {
   param |= SET_PARAM;
   SPIXfer((uint8_t)param);
@@ -14,7 +14,7 @@ void L6470_setParam(uint8_t param, uint32_t value)
 
 // Realize the "get parameter" function, to read from the various registers in
 //  the dSPIN chip.
-int32_t L6470_getParam(uint8_t param)
+int32_t getParam(uint8_t param)
 {
   SPIXfer(param | GET_PARAM);
   return paramHandler(param, 0);
@@ -56,7 +56,7 @@ int32_t L6470_getMark()
 void L6470_run(uint8_t dir, float stepsPerSec)
 {
   SPIXfer(RUN | dir);
-  uint32_t integerSpeed = spdCalc(stepsPerSec);
+  uint32_t integerSpeed = L6470_spdCalc(stepsPerSec);
   if (integerSpeed > 0xFFFFF) integerSpeed = 0xFFFFF;
   
   // Now we need to push this value out to the dSPIN. The 32-bit value is
@@ -66,12 +66,12 @@ void L6470_run(uint8_t dir, float stepsPerSec)
   //  valid here.
   
   // We begin by pointing uint8_tPointer at the first uint8_t in integerSpeed.
-  uint8_t* Pointer = (uint8_t*)&integerSpeed;
+  uint8_t* bytePointer = (uint8_t*)&integerSpeed;
   // Next, we'll iterate through a for loop, indexing across the uint8_ts in
   //  integerSpeed starting with uint8_t 2 and ending with uint8_t 0.
   for (int8_t i = 2; i >= 0; i--)
   {
-    SPIXfer(uint8_t Pointer[i]);
+    SPIXfer(bytePointer[i]);
   }
 }
 
@@ -94,10 +94,10 @@ void L6470_move(uint8_t dir, uint32_t numSteps)
   SPIXfer(MOVE | dir);
   if (numSteps > 0x3FFFFF) numSteps = 0x3FFFFF;
   // See run() for an explanation of what's going on here.
-  uint8_t* Pointer = (uint8_t*)&numSteps;
+  uint8_t* bytePointer = (uint8_t*)&numSteps;
   for (int8_t i = 2; i >= 0; i--)
   {
-    SPIXfer(uint8_t Pointer[i]);
+    SPIXfer(bytePointer[i]);
   }
 }
 
@@ -109,10 +109,10 @@ void L6470_goTo(int32_t pos)
   SPIXfer(GOTO);
   if (pos > 0x3FFFFF) pos = 0x3FFFFF;
   // See run() for an explanation of what's going on here.
-  uint8_t* Pointer = (uint8_t*)&pos;
+  uint8_t* bytePointer = (uint8_t*)&pos;
   for (int8_t i = 2; i >= 0; i--)
   {
-    SPIXfer(uint8_t Pointer[i]);
+    SPIXfer(bytePointer[i]);
   }
 }
 
@@ -122,10 +122,10 @@ void L6470_goToDir(uint8_t dir, int32_t pos)
   SPIXfer(GOTO_DIR | dir);
   if (pos > 0x3FFFFF) pos = 0x3FFFFF;
   // See run() for an explanation of what's going on here.
-  uint8_t* Pointer = (uint8_t*)&pos;
+  uint8_t* bytePointer = (uint8_t*)&pos;
   for (int8_t i = 2; i >= 0; i--)
   {
-    SPIXfer(uint8_t Pointer[i]);
+    SPIXfer(bytePointer[i]);
   }
 }
 
@@ -138,13 +138,13 @@ void L6470_goToDir(uint8_t dir, int32_t pos)
 void L6470_goUntil(uint8_t action, uint8_t dir, float stepsPerSec)
 {
   SPIXfer(GO_UNTIL | action | dir);
-  uint32_t integerSpeed = spdCalc(stepsPerSec);
+  uint32_t integerSpeed = L6470_spdCalc(stepsPerSec);
   if (integerSpeed > 0x3FFFFF) integerSpeed = 0x3FFFFF;
   // See run() for an explanation of what's going on here.
-  uint8_t* Pointer = (uint8_t*)&integerSpeed;
+  uint8_t* bytePointer = (uint8_t*)&integerSpeed;
   for (int8_t i = 2; i >= 0; i--)
   {
-    SPIXfer(uint8_t Pointer[i]);
+    SPIXfer(bytePointer[i]);
   }
 }
 
@@ -234,7 +234,7 @@ int16_t L6470_getStatus()
   int16_t temp = 0;
   uint8_t* Pointer = (uint8_t*)&temp;
   SPIXfer(GET_STATUS);
-  uint8_t Pointer[1] = SPIXfer(0);
-  uint8_t Pointer[0] = SPIXfer(0);
+  Pointer[1] = SPIXfer(0);
+  Pointer[0] = SPIXfer(0);
   return temp;
 }

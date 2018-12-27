@@ -1,7 +1,7 @@
-#ifndef AutoDriver_h
-#define AutoDriver_h
-#include <stdbool.h>
-#include <stdint.h>
+#ifndef __SPARKFUNAUTODRIVER_H
+#define __SPARKFUNAUTODRIVER_H
+
+#include "main.h"
 #include "SparkFundSPINConstants.h"
 
 // Constructors. We'll ALWAYS want a CS pin and a reset pin, but we may
@@ -18,100 +18,94 @@ int16_t getStatus();
 //  nice functions for; give them unrestricted access to the parameter
 //  registers.
 void setParam(uint8_t param, uint32_t value);
-int16_t getParam(uint8_t param);
+int32_t getParam(uint8_t param);
 
 // Lots of people just want Commands That Work; let's provide them!
 // Start with some configuration commands
-void setLoSpdOpt(bool enable);
-void configSyncPin(uint8_t pinFunc, uint8_t syncSteps);
-void configStepMode(uint8_t stepMode);
-void setMaxSpeed(float stepsPerSecond);
-void setMinSpeed(float stepsPerSecond);
-void setFullSpeed(float stepsPerSecond);
-void setAcc(float stepsPerSecondPerSecond);
-void setDec(float stepsPerSecondPerSecond);
-void setOCThreshold(uint8_t threshold);
-void setPWMFreq(int16_t divisor, int16_t multiplier);
-void setSlewRate(int16_t slewRate);
-void setOCShutdown(int16_t OCShutdown);
-void setVoltageComp(int16_t vsCompMode);
-void setSwitchMode(int16_t switchMode);
-void setOscMode(int16_t oscillatorMode);
-void setAccKVAL(uint8_t kvalInput);
-void setDecKVAL(uint8_t kvalInput);
-void setRunKVAL(uint8_t kvalInput);
-void setHoldKVAL(uint8_t kvalInput);
+void L6470_setLoSpdOpt(bool enable);
+void L6470_configSyncPin(uint8_t pinFunc, uint8_t syncSteps);
+void L6470_configStepMode(uint8_t stepMode);
+void L6470_setMaxSpeed(float stepsPerSecond);
+void L6470_setMinSpeed(float stepsPerSecond);
+void L6470_setFullSpeed(float stepsPerSecond);
+void L6470_setAcc(float stepsPerSecondPerSecond);
+void L6470_setDec(float stepsPerSecondPerSecond);
+void L6470_setOCThreshold(uint8_t threshold);
+void L6470_setPWMFreq(int16_t divisor, int16_t multiplier);
+void L6470_setSlewRate(int16_t slewRate);
+void L6470_setOCShutdown(int16_t OCShutdown);
+void L6470_setVoltageComp(int16_t vsCompMode);
+void L6470_setSwitchMode(int16_t switchMode);
+void L6470_setOscMode(int16_t oscillatorMode);
+void L6470_setAccKVAL(uint8_t kvalInput);
+void L6470_setDecKVAL(uint8_t kvalInput);
+void L6470_setRunKVAL(uint8_t kvalInput);
+void L6470_setHoldKVAL(uint8_t kvalInput);
 
-bool getLoSpdOpt();
+bool L6470_getLoSpdOpt();
 // getSyncPin
-uint8_t getStepMode();
-float getMaxSpeed();
-float getMinSpeed();
-float getFullSpeed();
-float getAcc();
-float getDec();
-uint8_t getOCThreshold();
-int16_t getPWMFreqDivisor();
-int16_t getPWMFreqMultiplier();
-int16_t getSlewRate();
-int16_t getOCShutdown();
-int16_t getVoltageComp();
-int16_t getSwitchMode();
-int16_t getOscMode();
-uint8_t getAccKVAL();
-uint8_t getDecKVAL();
-uint8_t getRunKVAL();
-uint8_t getHoldKVAL();
+uint8_t L6470_getStepMode();
+float L6470_getMaxSpeed();
+float L6470_getMinSpeed();
+float L6470_getFullSpeed();
+float L6470_getAcc();
+float L6470_getDec();
+uint8_t L6470_getOCThreshold();
+int16_t L6470_getPWMFreqDivisor();
+int16_t L6470_getPWMFreqMultiplier();
+int16_t L6470_getSlewRate();
+int16_t L6470_getOCShutdown();
+int16_t L6470_getVoltageComp();
+int16_t L6470_getSwitchMode();
+int16_t L6470_getOscMode();
+uint8_t L6470_getAccKVAL();
+uint8_t L6470_getDecKVAL();
+uint8_t L6470_getRunKVAL();
+uint8_t L6470_getHoldKVAL();
 
 // ...and now, operational commands.
-int16_t getPos();
-int16_t getMark();
-void run(uint8_t dir, float stepsPerSec);
-void stepClock(uint8_t dir);
-void move(uint8_t dir, uint32_t numSteps);
-void goTo(int16_t pos);
-void goToDir(uint8_t dir, int16_t pos);
-void goUntil(uint8_t action, uint8_t dir, float stepsPerSec);
-void releaseSw(uint8_t action, uint8_t dir);
-void goHome();
-void goMark();
-void setMark(int16_t newMark);
-void setPos(int16_t newPos);
-void resetPos();
-void resetDev();
-void softStop();
-void hardStop();
-void softHiZ();
-void hardHiZ();
+int32_t L6470_getPos();
+int32_t L6470_getMark();
+void L6470_run(uint8_t dir, float stepsPerSec);
+void L6470_stepClock(uint8_t dir);
+void L6470_move(uint8_t dir, uint32_t numSteps);
+void L6470_goTo(int32_t pos);
+void L6470_goToDir(uint8_t dir, int32_t pos);
+void L6470_goUntil(uint8_t action, uint8_t dir, float stepsPerSec);
+void L6470_releaseSw(uint8_t action, uint8_t dir);
+void L6470_goHome();
+void L6470_goMark();
+void L6470_setMark(int32_t newMark);
+void L6470_setPos(int32_t newPos);
+void L6470_resetPos();
+void L6470_resetDev();
+void L6470_softStop();
+void L6470_hardStop();
+void L6470_softHiZ();
+void L6470_hardHiZ();
 
 
 uint8_t SPIXfer(uint8_t data);
-int16_t xferParam(uint32_t value, uint8_t bitLen);
-int16_t paramHandler(uint8_t param, uint32_t value);
+int32_t xferParam(uint32_t value, uint8_t bitLen);
+int32_t paramHandler(uint8_t param, uint32_t value);
 
 // Support functions for converting from user units to L6470 units
-uint32_t accCalc(float stepsPerSecPerSec);
-uint32_t decCalc(float stepsPerSecPerSec);
-uint32_t minSpdCalc(float stepsPerSec);
-uint32_t maxSpdCalc(float stepsPerSec);
-uint32_t FSCalc(float stepsPerSec);
-uint32_t intSpdCalc(float stepsPerSec);
-uint32_t spdCalc(float stepsPerSec);
+uint32_t L6470_accCalc(float stepsPerSecPerSec);
+uint32_t L6470_decCalc(float stepsPerSecPerSec);
+uint32_t L6470_minSpdCalc(float stepsPerSec);
+uint32_t L6470_maxSpdCalc(float stepsPerSec);
+uint32_t L6470_FSCalc(float stepsPerSec);
+uint32_t L6470_intSpdCalc(float stepsPerSec);
+uint32_t L6470_spdCalc(float stepsPerSec);
 
 // Support functions for converting from L6470 to user units
-float accParse(uint32_t stepsPerSecPerSec);
-float decParse(uint32_t stepsPerSecPerSec);
-float minSpdParse(uint32_t stepsPerSec);
-float maxSpdParse(uint32_t stepsPerSec);
-float FSParse(uint32_t stepsPerSec);
-float intSpdParse(uint32_t stepsPerSec);
-float spdParse(uint32_t stepsPerSec);
-
-int16_t _CSPin;
-int16_t _resetPin;
-int16_t _busyPin;
-int16_t _position;
-static int16_t _numBoards;
+float L6470_accParse(uint32_t stepsPerSecPerSec);
+float L6470_decParse(uint32_t stepsPerSecPerSec);
+float L6470_minSpdParse(uint32_t stepsPerSec);
+float L6470_maxSpdParse(uint32_t stepsPerSec);
+float L6470_FSParse(uint32_t stepsPerSec);
+float L6470_intSpdParse(uint32_t stepsPerSec);
+float L6470_spdParse(uint32_t stepsPerSec);
 
 // User constants for public functions.
 

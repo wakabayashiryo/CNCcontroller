@@ -46,7 +46,7 @@ void L6470_setMaxSpeed(float stepsPerSecond)
 {
   // We need to convert the floating point stepsPerSecond into a value that
   //  the dSPIN can understand. Fortunately, we have a function to do that.
-  uint32_t integerSpeed = maxSpdCalc(stepsPerSecond);
+  uint32_t integerSpeed = L6470_maxSpdCalc(stepsPerSecond);
   
   // Now, we can set that paramter.
   setParam(MAX_SPEED, integerSpeed);
@@ -55,7 +55,7 @@ void L6470_setMaxSpeed(float stepsPerSecond)
 
 float L6470_getMaxSpeed()
 {
-  return maxSpdParse(getParam(MAX_SPEED));
+  return L6470_maxSpdParse(getParam(MAX_SPEED));
 }
 
 // Set the minimum speed allowable in the system. This is the speed a motion
@@ -65,7 +65,7 @@ void L6470_setMinSpeed(float stepsPerSecond)
 {
   // We need to convert the floating point stepsPerSecond into a value that
   //  the dSPIN can understand. Fortunately, we have a function to do that.
-  uint32_t integerSpeed = minSpdCalc(stepsPerSecond);
+  uint32_t integerSpeed = L6470_minSpdCalc(stepsPerSecond);
   
   // MIN_SPEED also contains the LSPD_OPT flag, so we need to protect that.
   uint32_t temp = getParam(MIN_SPEED) & 0x00001000;
@@ -76,20 +76,20 @@ void L6470_setMinSpeed(float stepsPerSecond)
 
 float L6470_getMinSpeed()
 {
-  return minSpdParse(getParam(MIN_SPEED));
+  return L6470_minSpdParse(getParam(MIN_SPEED));
 }
 
 // Above this threshold, the dSPIN will cease microstepping and go to full-step
 //  mode. 
 void L6470_setFullSpeed(float stepsPerSecond)
 {
-  uint32_t integerSpeed = FSCalc(stepsPerSecond);
+  uint32_t integerSpeed = L6470_FSCalc(stepsPerSecond);
   setParam(FS_SPD, integerSpeed);
 }
 
 float L6470_getFullSpeed()
 {
-  return FSParse(getParam(FS_SPD));
+  return L6470_FSParse(getParam(FS_SPD));
 }
 
 // Set the acceleration rate, in steps per second per second. This value is
@@ -97,25 +97,25 @@ float L6470_getFullSpeed()
 //  disable acceleration, putting the chip in "infinite" acceleration mode.
 void L6470_setAcc(float stepsPerSecondPerSecond)
 {
-  uint32_t integerAcc = accCalc(stepsPerSecondPerSecond);
+  uint32_t integerAcc = L6470_accCalc(stepsPerSecondPerSecond);
   setParam(ACC, integerAcc);
 }
 
 float L6470_getAcc()
 {
-  return accParse(getParam(ACC));
+  return L6470_accParse(getParam(ACC));
 }
 
 // Same rules as setAcc().
 void L6470_setDec(float stepsPerSecondPerSecond)
 {
-  uint32_t integerDec = decCalc(stepsPerSecondPerSecond);
+  uint32_t integerDec = L6470_decCalc(stepsPerSecondPerSecond);
   setParam(DECEL, integerDec);
 }
 
 float L6470_getDec()
 {
-  return accParse(getParam(DECEL));
+  return L6470_accParse(getParam(DECEL));
 }
 
 void L6470_setOCThreshold(uint8_t threshold)
@@ -136,7 +136,7 @@ uint8_t L6470_getOCThreshold()
 //  Divisors of 1-7 are available; multipliers of .625-2 are available. See
 //  datasheet for more details; it's not clear what the frequency being
 //  multiplied/divided here is, but it is clearly *not* the actual clock freq.
-void L6470_setPWMFreq(int divisor, int multiplier)
+void L6470_setPWMFreq(int16_t divisor, int16_t multiplier)
 {
   uint32_t configVal = getParam(CONFIG);
   

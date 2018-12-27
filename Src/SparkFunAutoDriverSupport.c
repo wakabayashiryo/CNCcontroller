@@ -119,7 +119,7 @@ float L6470_spdParse(uint32_t stepsPerSec)
 // Much of the functionality between "get parameter" and "set parameter" is
 //  very similar, so we deal with that by putting all of it in one function
 //  here to save memory space and simplify the program.
-int32_t L6470_paramHandler(uint8_t param, uint32_t value)
+int32_t paramHandler(uint8_t param, uint32_t value)
 {
   int32_t retVal = 0;   // This is a temp for the value to return.
   
@@ -288,7 +288,7 @@ int32_t L6470_paramHandler(uint8_t param, uint32_t value)
 // Generalization of the subsections of the register read/write functionality.
 //  We want the end user to just write the value without worrying about length,
 //  so we pass a bit length parameter from the calling function.
-int32_t L6470_xferParam(uint32_t value, uint8_t bitLen)
+int32_t xferParam(uint32_t value, uint8_t bitLen)
 {
   uint8_t uint8_tLen = bitLen/8;      // How many uint8_tS do we have?
   if (bitLen%8 > 0) uint8_tLen++;  // Make sure not to lose any partial uint8_t values.
@@ -308,15 +308,17 @@ int32_t L6470_xferParam(uint32_t value, uint8_t bitLen)
   return retVal & mask;
 }
 
-uint8_t L6470_SPIXfer(uint8_t data)
+SPI_HandleTypeDef hspi1;
+
+uint8_t SPIXfer(uint8_t data)
 {
   uint8_t dataPacket;
   uint8_t rePacket;
 
-  dataPacketdata;
-  digitalWrite(_CSPin, LOW);
-  HAL_SPI_TransmitReceive_DMA(&hspi, &dataPacket, &rePacket,1);
-  digitalWrite(_CSPin, HIGH);
-  return dataPacket[_position];
+  HAL_GPIO_WritePin(_CS1_GPIO_Port, _CS1_Pin, GPIO_PIN_RESET);
+  HAL_SPI_TransmitReceive_DMA(&hspi1, &dataPacket, &rePacket,1);
+  HAL_GPIO_WritePin(_CS1_GPIO_Port, _CS1_Pin, GPIO_PIN_SET);
+
+  return rePacket;
 }
 
