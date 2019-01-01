@@ -145,7 +145,7 @@ int main(void)
   L6470_setOCShutdown(OC_SD_DISABLE); // don't shutdown on OC
   L6470_setVoltageComp(VS_COMP_DISABLE); // don't compensate for motor V
   L6470_setSwitchMode(SW_USER);    // Switch is not hard stop
-  L6470_setOscMode(EXT_16MHZ_OSCOUT_INVERT); // for boardA, we want 16MHz
+  L6470_setOscMode(INT_16MHZ_OSCOUT_16MHZ); // for boardA, we want 16MHz
                                     //  external osc, 16MHz out. boardB
                                     //  will be the same in all respects
                                     //  but this, as it will generate the
@@ -491,15 +491,15 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, _CS2_Pin|_CS1_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, _CS3_Pin|_CS2_Pin|_CS1_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : _CS2_Pin _CS1_Pin */
-  GPIO_InitStruct.Pin = _CS2_Pin|_CS1_Pin;
+  /*Configure GPIO pins : _CS3_Pin _CS2_Pin _CS1_Pin */
+  GPIO_InitStruct.Pin = _CS3_Pin|_CS2_Pin|_CS1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
