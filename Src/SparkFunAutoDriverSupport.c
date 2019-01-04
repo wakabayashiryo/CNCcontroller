@@ -116,6 +116,13 @@ float L6470_spdParse(uint32_t stepsPerSec)
     return (float) (stepsPerSec & 0x000FFFFF) / 67.106;
 }
 
+static ChipSelectNo _CSx = _CS1;
+
+void L6470_selectBoard(ChipSelectNo cs)
+{
+  _CSx = cs;
+}
+
 // Much of the functionality between "get parameter" and "set parameter" is
 //  very similar, so we deal with that by putting all of it in one function
 //  here to save memory space and simplify the program.
@@ -312,13 +319,53 @@ SPI_HandleTypeDef hspi1;
 
 uint8_t SPIXfer(uint8_t data)
 {
-  uint8_t dataPacket;
+  uint8_t dataPacket = data;
   uint8_t rePacket;
 
-  HAL_GPIO_WritePin(_CS1_GPIO_Port, _CS1_Pin, GPIO_PIN_RESET);
+  switch(_CSx)
+  {
+    case _CS1:
+      _CS1_ENABLE();
+      break;
+    case _CS2:
+      _CS2_ENABLE();
+      break;
+    case _CS3:
+      _CS3_ENABLE();
+      break;
+    case _CS4:
+      _CS4_ENABLE();
+      break;
+    case _CS5:
+      _CS5_ENABLE();
+      break;
+    default:
+    break;
+  }
+  HAL_Delay(1);
+
   HAL_SPI_TransmitReceive_DMA(&hspi1, &dataPacket, &rePacket,1);
-  HAL_GPIO_WritePin(_CS1_GPIO_Port, _CS1_Pin, GPIO_PIN_SET);
+  
+  switch(_CSx)
+  {
+    case _CS1:
+      _CS1_DISABLE();
+      break;
+    case _CS2:
+      _CS2_DISABLE();
+      break;
+    case _CS3:
+      _CS3_DISABLE();
+      break;
+    case _CS4:
+      _CS4_DISABLE();
+      break;
+    case _CS5:
+      _CS5_DISABLE();
+      break;
+    default:
+    break;
+  }
 
   return rePacket;
 }
-

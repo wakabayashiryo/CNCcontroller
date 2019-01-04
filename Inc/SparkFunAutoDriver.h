@@ -4,6 +4,32 @@
 #include "main.h"
 #include "SparkFundSPINConstants.h"
 
+typedef enum
+{
+  _CS1  = 0,
+  _CS2  = 1,
+  _CS3  = 2,
+  _CS4  = 3,
+  _CS5  = 4
+}ChipSelectNo;
+
+#define _CS1_ENABLE()     HAL_GPIO_WritePin(_CS1_GPIO_Port, _CS1_Pin, GPIO_PIN_RESET)
+#define _CS1_DISABLE()    HAL_GPIO_WritePin(_CS1_GPIO_Port, _CS1_Pin, GPIO_PIN_SET)
+
+#define _CS2_ENABLE()     HAL_GPIO_WritePin(_CS2_GPIO_Port, _CS2_Pin, GPIO_PIN_RESET)
+#define _CS2_DISABLE()    HAL_GPIO_WritePin(_CS2_GPIO_Port, _CS2_Pin, GPIO_PIN_SET)
+
+#define _CS3_ENABLE()     HAL_GPIO_WritePin(_CS3_GPIO_Port, _CS3_Pin, GPIO_PIN_RESET)
+#define _CS3_DISABLE()    HAL_GPIO_WritePin(_CS3_GPIO_Port, _CS3_Pin, GPIO_PIN_SET)
+
+#define _CS4_ENABLE()     HAL_GPIO_WritePin(_CS1_GPIO_Port, _CS1_Pin, GPIO_PIN_RESET)
+#define _CS4_DISABLE()    HAL_GPIO_WritePin(_CS1_GPIO_Port, _CS1_Pin, GPIO_PIN_SET)
+
+#define _CS5_ENABLE()     HAL_GPIO_WritePin(_CS1_GPIO_Port, _CS1_Pin, GPIO_PIN_RESET)
+#define _CS5_DISABLE()    HAL_GPIO_WritePin(_CS1_GPIO_Port, _CS1_Pin, GPIO_PIN_SET)
+
+void L6470_selectBoard(ChipSelectNo cs);
+
 // Constructors. We'll ALWAYS want a CS pin and a reset pin, but we may
 //  not want a busy pin. By using two constructors, we make it easy to
 //  allow that.

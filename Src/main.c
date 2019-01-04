@@ -134,26 +134,30 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-  L6470_configStepMode(STEP_FS);   // 0 microsteps per step
+
+  L6470_selectBoard(_CS1);
+  L6470_setOscMode(INT_16MHZ_OSCOUT_16MHZ); // for  we want 16MHz
+                                    //  external osc, 16MHz out. boardB
+                                    //  will be the same in all respects
+                                    //  but this, as it will generate the
+                                    //  clock. 
+  L6470_configStepMode(STEP_FS_128);   // 128 microsteps per step
   L6470_setMaxSpeed(10000);        // 10000 steps/s max
   L6470_setFullSpeed(10000);       // microstep below 10000 steps/s
   L6470_setAcc(10000);             // accelerate at 10000 steps/s/s
   L6470_setDec(10000);
   L6470_setSlewRate(SR_530V_us);   // Upping the edge speed increases torque.
-  L6470_setOCThreshold(OC_750mA);  // OC threshold 750mA
+  L6470_setOCThreshold(OC_6000mA);  // OC threshold 6000mA
   L6470_setPWMFreq(PWM_DIV_2, PWM_MUL_2); // 31.25kHz PWM freq
   L6470_setOCShutdown(OC_SD_DISABLE); // don't shutdown on OC
   L6470_setVoltageComp(VS_COMP_DISABLE); // don't compensate for motor V
   L6470_setSwitchMode(SW_USER);    // Switch is not hard stop
-  L6470_setOscMode(INT_16MHZ_OSCOUT_16MHZ); // for boardA, we want 16MHz
-                                    //  external osc, 16MHz out. boardB
-                                    //  will be the same in all respects
-                                    //  but this, as it will generate the
-                                    //  clock.
-  L6470_setAccKVAL(128);           // We'll tinker with these later, if needed.
-  L6470_setDecKVAL(128);
-  L6470_setRunKVAL(128);
+  
+  L6470_setAccKVAL(192);           // We'll tinker with these later, if needed.
+  L6470_setDecKVAL(192);
+  L6470_setRunKVAL(192);
   L6470_setHoldKVAL(32);           // This controls the holding current; keep it low.
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -163,12 +167,20 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    L6470_run(0,56);
+    L6470_run(REV,1000);
+    HAL_Delay(5000);
+    L6470_run(REV,0);
+    HAL_Delay(1000);
 
-    HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-    HAL_Delay(500);
-    HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-    HAL_Delay(500);
+    L6470_run(FWD,1000);
+    HAL_Delay(5000);
+    L6470_run(FWD,0);
+    HAL_Delay(1000);
+
+    // HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+    // HAL_Delay(500);
+    // HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+    // HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
@@ -288,7 +300,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
