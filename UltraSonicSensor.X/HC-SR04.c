@@ -24,9 +24,10 @@ void HC_SR04_Init(HC_SR04_Init_PORTTypedef HC_SR04_InitPort,HC_SR40_CONFIG_t *co
     T1CON |= (1<<0);//enable timer1
 }
 
-void  HC_SR04_MeasureDistance(uint8_t ch)
+void  HC_SR04_Measure_PulseWidth(uint8_t ch)
 {
     TMR1 = 0x0000;//Clear measuremented value
+    
     TMR1GE = 1;   //Gate enable
     
     *static_conf[ch].Echo_PORT |= (uint8_t)(1<<static_conf[ch].Echo_PIN);//issue trigger to ultrasonic sensor      
@@ -41,12 +42,39 @@ void  HC_SR04_MeasureDistance(uint8_t ch)
     static_conf[ch].count = TMR1;    //pulse width value (unit:micro seconds)
 }
 
+uint16_t HC_SR04_Get_PulseWidth(uint8_t ch)
+{
+    return static_conf[ch].count;
+}
+
+/*  Distance[m]     = v[m/s] * t[s] / 2
+ *  v = 340[m/s] = 34000[cm/s] = 0.034[cm/μs]
+ * 
+ *  Distance[cm/us] = 0.017[cm/us] * t[us]
+ *                  = (1 / 58.82)  * t[us] = t[us] / 58.82
+ */
+float HC_SR04_Get_Distance(uint8_t ch)
+{
+    return (float)static_conf[ch].count/58.82f;
+}
+
+/*  Distance[m]     = v[m/s] * t[s] / 2
+ *  v[cm/us] = (331.5 + 0.60714 * T) / 100000 
+ */
+float HC_SR04_Get_CorrectedDistance(uint8_t ch,float temp)
+{
+    float v = (331.5 + 0.60714 * temp) / 10000.f;
+    
+    return v * (float)static_conf[ch].count / 2;
+}
+
 void HC_SR04_Show_Distance(uint8_t NumofCh)
 {
     for(uint8_t i=0;i<NumofCh;i++)
     {
-        HC_SR04_MeasureDistance(i);
+        HC_SR04_Measure_PulseWidth(i);
         printf("| ch[%d] Echo:%04dus Distan:%d.%02dcm ",i,static_conf[i].count,static_conf[i].count/58,static_conf[i].count%58);
     }
     printf("|\n");
 }
+

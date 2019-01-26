@@ -39,7 +39,7 @@
 #include <stdint.h>
 
 #include "PIC_UART.h"
-#include "PIC_SPI.h"
+#include "PIC_ADC.h"
 #include "HC-SR04.h"
 
 //Assign System Clock macro for delay

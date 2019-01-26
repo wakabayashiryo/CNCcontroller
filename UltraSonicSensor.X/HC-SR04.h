@@ -28,7 +28,14 @@ typedef struct
 typedef void (*HC_SR04_Init_PORTTypedef)(void);
 
 void HC_SR04_Init(HC_SR04_Init_PORTTypedef HC_SR04_InitPort,HC_SR40_CONFIG_t *conf);
-void HC_SR04_MeasureDistance(uint8_t ch);
+
+void  HC_SR04_Measure_PulseWidth(uint8_t ch);
+
+uint16_t HC_SR04_Get_Count(uint8_t ch);
+uint16_t HC_SR04_Get_PulseWidth(uint8_t ch);
+float HC_SR04_Get_Distance(uint8_t ch);
+float HC_SR04_Get_CorrectedDistance(uint8_t ch,float temp);
+
 void HC_SR04_Show_Distance(uint8_t NumofCh);
 
 #ifdef	__cplusplus
